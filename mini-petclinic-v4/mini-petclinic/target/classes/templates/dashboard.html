@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mini PetClinic</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+  <header th:replace="~{fragments :: header}"></header>
+  <main class="wide">
+    <div class="flash" th:if="${message}" th:text="${message}"></div>
+
+    <h2 th:text="'Welcome, ' + ${me.fullName}">Welcome</h2>
+    <p th:text="${todayText}">Today</p>
+
+    <div class="stats">
+      <div class="stat"><span class="num" th:text="${pendingToday}">0</span>Pending today</div>
+      <div class="stat"><span class="num" th:text="${doneToday}">0</span>Completed today</div>
+      <div class="stat"><span class="num" th:text="${ownerCount}">0</span>Owners</div>
+      <div class="stat"><span class="num" th:text="${petCount}">0</span>Pets</div>
+    </div>
+
+    <h2>Today's bookings</h2>
+    <table th:replace="~{fragments :: apptTable(${todays}, false)}"></table>
+
+    <h2>Next 7 days</h2>
+    <table th:replace="~{fragments :: apptTable(${upcoming}, true)}"></table>
+  </main>
+</body>
+</html>

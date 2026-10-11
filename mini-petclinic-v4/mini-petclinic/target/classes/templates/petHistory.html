@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mini PetClinic</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+  <header th:replace="~{fragments :: header}"></header>
+  <main class="wide">
+    <h2 th:text="'Medical history: ' + ${pet.name} + ' (' + ${pet.type} + ')'">History</h2>
+    <p>Owner: <a th:href="@{/owners/{id}(id=${owner.id})}"
+                 th:text="${owner.firstName + ' ' + owner.lastName}"></a></p>
+    <table>
+      <thead>
+        <tr><th>Date</th><th>Doctor</th><th>Reason</th><th>Status</th><th>Diagnosis</th><th>Treatment</th><th>Notes</th></tr>
+      </thead>
+      <tbody>
+        <tr th:each="a : ${history}">
+          <td th:text="${a.appointmentDate + ' ' + a.timeText}"></td>
+          <td th:text="${a.doctor.fullName}"></td>
+          <td th:text="${a.reason}"></td>
+          <td><span class="status" th:classappend="${'status-' + a.status}" th:text="${a.status}"></span></td>
+          <td th:text="${a.diagnosis}"></td>
+          <td th:text="${a.treatment}"></td>
+          <td th:text="${a.notes}"></td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(history)}"><td colspan="7">No visits yet.</td></tr>
+      </tbody>
+    </table>
+    <p><a class="btn secondary" th:href="@{/owners/{id}(id=${owner.id})}">Back</a></p>
+  </main>
+</body>
+</html>

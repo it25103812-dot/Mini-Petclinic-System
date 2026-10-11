@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mini PetClinic</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+  <header th:replace="~{fragments :: header}"></header>
+  <main>
+    <h2 th:text="${form.id == null} ? 'Add Doctor' : 'Edit Account'">Account</h2>
+    <form class="card" method="post" th:object="${form}"
+          th:action="${form.id == null} ? @{/admin/doctors/new} : @{/admin/doctors/{id}/edit(id=${form.id})}">
+      <label>Full name
+        <input type="text" th:field="*{fullName}">
+        <span class="error" th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}"></span>
+      </label>
+      <label>Username
+        <input type="text" th:field="*{username}" th:readonly="${form.id != null}">
+        <span class="error" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></span>
+      </label>
+      <label>Specialization
+        <input type="text" th:field="*{specialization}">
+      </label>
+      <label th:text="${form.id == null} ? 'Password (min 6 characters)' : 'New password (leave empty to keep the current one)'">
+        Password
+      </label>
+      <input type="password" th:field="*{password}" autocomplete="new-password">
+      <span class="error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
+      <label th:if="${form.id != null}" class="check">
+        <input type="checkbox" th:field="*{enabled}"> Account active (can log in)
+      </label>
+      <div>
+        <button type="submit">Save</button>
+        <a class="btn secondary" th:href="@{/admin/doctors}">Cancel</a>
+      </div>
+    </form>
+  </main>
+</body>
+</html>

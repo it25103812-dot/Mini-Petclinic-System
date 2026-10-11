@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="en">
+<body>
+
+<header th:fragment="header">
+  <h1><a th:href="@{/dashboard}">🐾 Mini PetClinic</a></h1>
+  <nav>
+    <a th:href="@{/dashboard}">Dashboard</a>
+    <a th:href="@{/}">Owners</a>
+    <a th:href="@{/calendar}">Calendar</a>
+    <a th:href="@{/admin/doctors}" sec:authorize="hasRole('ADMIN')">Doctors</a>
+    <span class="who" th:if="${me != null}" th:text="${me.fullName + ' (' + me.role + ')'}">User</span>
+    <form th:action="@{/logout}" method="post" class="logout">
+      <button class="small secondary" type="submit">Logout</button>
+    </form>
+  </nav>
+</header>
+
+<table th:fragment="apptTable(list, showDate)">
+  <thead>
+    <tr>
+      <th th:if="${showDate}">Date</th><th>Time</th><th>Client</th><th>Pet</th>
+      <th>Reason</th><th>Doctor</th><th>Status</th><th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr th:each="a : ${list}">
+      <td th:if="${showDate}" th:text="${a.appointmentDate}"></td>
+      <td th:text="${a.timeText}"></td>
+      <td><a th:href="@{/owners/{id}(id=${a.pet.owner.id})}"
+             th:text="${a.pet.owner.firstName + ' ' + a.pet.owner.lastName}"></a></td>
+      <td th:text="${a.pet.name}"></td>
+      <td th:text="${a.reason}"></td>
+      <td th:text="${a.doctor.fullName}"></td>
+      <td><span class="status" th:classappend="${'status-' + a.status}" th:text="${a.status}"></span></td>
+      <td class="actions">
+        <a class="btn small" th:if="${a.status == 'PENDING' and (me.role == 'ADMIN' or a.doctor.id == me.id)}"
+           th:href="@{/appointments/{id}/visit(id=${a.id})}">Record visit</a>
+        <a class="btn small secondary" th:href="@{/appointments/{id}/edit(id=${a.id})}">Edit</a>
+        <form th:if="${a.status == 'PENDING'}" method="post"
+              th:action="@{/appointments/{id}/status(id=${a.id})}"
+              onsubmit="return confirm('Cancel this booking?');">
+          <input type="hidden" name="status" value="CANCELLED">
+          <input type="hidden" name="from" value="dashboard">
+          <button class="warn small" type="submit">Cancel</button>
+        </form>
+      </td>
+    </tr>
+    <tr th:if="${#lists.isEmpty(list)}"><td colspan="8">No bookings.</td></tr>
+  </tbody>
+</table>
+
+</body>
+</html>

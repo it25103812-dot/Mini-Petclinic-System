@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mini PetClinic</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+  <header th:replace="~{fragments :: header}"></header>
+  <main>
+    <div class="flash" th:if="${message}" th:text="${message}"></div>
+
+    <h2>Owner Information</h2>
+    <table class="info">
+      <tr><th>Name</th><td th:text="${owner.firstName + ' ' + owner.lastName}"></td></tr>
+      <tr><th>City</th><td th:text="${owner.city}"></td></tr>
+      <tr><th>Telephone</th><td th:text="${owner.telephone}"></td></tr>
+    </table>
+    <p>
+      <a class="btn" th:href="@{/owners/{id}/edit(id=${owner.id})}">Edit Owner</a>
+      <a class="btn secondary" th:href="@{/}">Back to list</a>
+    </p>
+
+    <h2>Pets</h2>
+    <p><a class="btn" th:href="@{/owners/{id}/pets/new(id=${owner.id})}">+ Add Pet</a></p>
+    <table>
+      <thead>
+        <tr><th>Name</th><th>Birth Date</th><th>Type</th><th>Actions</th></tr>
+      </thead>
+      <tbody>
+        <tr th:each="p : ${owner.pets}">
+          <td th:text="${p.name}"></td>
+          <td th:text="${p.birthDate}"></td>
+          <td th:text="${p.type}"></td>
+          <td class="actions">
+            <a class="btn small" th:href="@{/appointments/new(petId=${p.id})}">Book</a>
+            <a class="btn small secondary"
+               th:href="@{/owners/{oid}/pets/{pid}/history(oid=${owner.id},pid=${p.id})}">History</a>
+            <a class="btn small secondary"
+               th:href="@{/owners/{oid}/pets/{pid}/edit(oid=${owner.id},pid=${p.id})}">Edit</a>
+            <form sec:authorize="hasRole('ADMIN')" method="post"
+                  th:action="@{/owners/{oid}/pets/{pid}/delete(oid=${owner.id},pid=${p.id})}"
+                  onsubmit="return confirm('PERMANENTLY delete this pet and its bookings?');">
+              <button class="danger small" type="submit">Delete</button>
+            </form>
+          </td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(owner.pets)}"><td colspan="4">No pets yet.</td></tr>
+      </tbody>
+    </table>
+  </main>
+</body>
+</html>

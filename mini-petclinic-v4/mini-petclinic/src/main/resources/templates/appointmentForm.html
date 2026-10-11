@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mini PetClinic</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+  <header th:replace="~{fragments :: header}"></header>
+  <main>
+    <h2 th:text="${appointment.id == null} ? 'New Booking' : 'Edit Booking'">Booking</h2>
+    <form class="card" method="post" th:object="${appointment}"
+          th:action="${appointment.id == null} ? @{/appointments/new} : @{/appointments/{id}/edit(id=${appointment.id})}">
+      <label>Client / Pet
+        <select name="petId" required>
+          <option value="">-- choose pet --</option>
+          <option th:each="p : ${pets}" th:value="${p.id}"
+                  th:selected="${p.id == selectedPetId}"
+                  th:text="${p.owner.firstName + ' ' + p.owner.lastName + ' - ' + p.name + ' (' + p.type + ')'}"></option>
+        </select>
+        <span class="error" th:if="${#fields.hasErrors('pet')}" th:errors="*{pet}"></span>
+      </label>
+      <label>Doctor
+        <select name="doctorId" required>
+          <option value="">-- choose doctor --</option>
+          <option th:each="d : ${doctors}" th:value="${d.id}"
+                  th:selected="${d.id == selectedDoctorId}"
+                  th:text="${d.fullName + (d.specialization != null ? ' - ' + d.specialization : '')}"></option>
+        </select>
+        <span class="error" th:if="${#fields.hasErrors('doctor')}" th:errors="*{doctor}"></span>
+      </label>
+      <label>Date
+        <input type="date" th:field="*{appointmentDate}">
+        <span class="error" th:if="${#fields.hasErrors('appointmentDate')}" th:errors="*{appointmentDate}"></span>
+      </label>
+      <label>Time
+        <input type="time" th:field="*{appointmentTime}">
+        <span class="error" th:if="${#fields.hasErrors('appointmentTime')}" th:errors="*{appointmentTime}"></span>
+      </label>
+      <label>Reason
+        <input type="text" th:field="*{reason}" placeholder="e.g. Vaccination">
+        <span class="error" th:if="${#fields.hasErrors('reason')}" th:errors="*{reason}"></span>
+      </label>
+      <div>
+        <button type="submit">Save</button>
+        <a class="btn secondary" th:href="@{/calendar}">Cancel</a>
+      </div>
+    </form>
+
+    <form sec:authorize="hasRole('ADMIN')" th:if="${appointment.id != null}" method="post" style="margin-top:1rem"
+          th:action="@{/appointments/{id}/delete(id=${appointment.id})}"
+          onsubmit="return confirm('PERMANENTLY delete this booking?');">
+      <button class="danger" type="submit">Permanently delete this booking</button>
+    </form>
+  </main>
+</body>
+</html>

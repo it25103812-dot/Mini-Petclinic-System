@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mini PetClinic</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+  <header th:replace="~{fragments :: header}"></header>
+  <main class="wide">
+    <div class="flash" th:if="${message}" th:text="${message}"></div>
+    <h2>Doctor &amp; staff accounts</h2>
+    <p><a class="btn" th:href="@{/admin/doctors/new}">+ Add Doctor</a></p>
+    <table>
+      <thead><tr><th>Name</th><th>Username</th><th>Role</th><th>Specialization</th><th>Active</th><th>Actions</th></tr></thead>
+      <tbody>
+        <tr th:each="u : ${accounts}">
+          <td th:text="${u.fullName}"></td>
+          <td th:text="${u.username}"></td>
+          <td th:text="${u.role}"></td>
+          <td th:text="${u.specialization}"></td>
+          <td th:text="${u.enabled} ? 'Yes' : 'No'"></td>
+          <td><a class="btn small secondary" th:href="@{/admin/doctors/{id}/edit(id=${u.id})}">Edit / Reset password</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </main>
+</body>
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mini PetClinic</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+  <header th:replace="~{fragments :: header}"></header>
+  <main>
+    <h2>Record Visit</h2>
+    <table class="info">
+      <tr><th>Client</th><td th:text="${appointment.pet.owner.firstName + ' ' + appointment.pet.owner.lastName}"></td></tr>
+      <tr><th>Pet</th><td th:text="${appointment.pet.name + ' (' + appointment.pet.type + ')'}"></td></tr>
+      <tr><th>Date</th><td th:text="${appointment.appointmentDate + ' ' + appointment.timeText}"></td></tr>
+      <tr><th>Reason</th><td th:text="${appointment.reason}"></td></tr>
+      <tr><th>Doctor</th><td th:text="${appointment.doctor.fullName}"></td></tr>
+    </table>
+
+    <form class="card" method="post" th:action="@{/appointments/{id}/visit(id=${appointment.id})}">
+      <div class="error-box" th:if="${error}" th:text="${error}"></div>
+      <label>Diagnosis
+        <textarea name="diagnosis" rows="3" maxlength="1000" th:text="${diagnosis}"></textarea>
+      </label>
+      <label>Treatment / Prescription
+        <textarea name="treatment" rows="3" maxlength="1000" th:text="${treatment}"></textarea>
+      </label>
+      <label>Notes
+        <textarea name="notes" rows="3" maxlength="1000" th:text="${notes}"></textarea>
+      </label>
+      <div>
+        <button type="submit">Save &amp; mark completed</button>
+        <a class="btn secondary" th:href="@{/dashboard}">Cancel</a>
+      </div>
+    </form>
+  </main>
+</body>
+</html>

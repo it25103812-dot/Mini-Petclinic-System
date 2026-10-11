@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mini PetClinic</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+  <header th:replace="~{fragments :: header}"></header>
+  <main>
+    <div class="flash" th:if="${message}" th:text="${message}"></div>
+
+    <form class="search" method="get" th:action="@{/}">
+      <input type="text" name="search" th:value="${search}" placeholder="Search by last name">
+      <button type="submit">Search</button>
+      <a class="btn" th:href="@{/owners/new}">+ Add Owner</a>
+    </form>
+
+    <table>
+      <thead>
+        <tr><th>Name</th><th>City</th><th>Telephone</th><th>Pets</th><th>Actions</th></tr>
+      </thead>
+      <tbody>
+        <tr th:each="o : ${owners}">
+          <td><a th:href="@{/owners/{id}(id=${o.id})}" th:text="${o.firstName + ' ' + o.lastName}">Name</a></td>
+          <td th:text="${o.city}">City</td>
+          <td th:text="${o.telephone}">Phone</td>
+          <td><span class="badge" th:text="${#lists.size(o.pets)}">0</span></td>
+          <td class="actions">
+            <a class="btn small" th:href="@{/owners/{id}(id=${o.id})}">View</a>
+            <a class="btn small secondary" th:href="@{/owners/{id}/edit(id=${o.id})}">Edit</a>
+            <form sec:authorize="hasRole('ADMIN')" method="post" th:action="@{/owners/{id}/delete(id=${o.id})}"
+                  onsubmit="return confirm('PERMANENTLY delete this owner and all their pets and bookings?');">
+              <button class="danger small" type="submit">Delete</button>
+            </form>
+          </td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(owners)}"><td colspan="5">No owners found.</td></tr>
+      </tbody>
+    </table>
+  </main>
+</body>
+</html>

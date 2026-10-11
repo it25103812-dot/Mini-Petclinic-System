@@ -1,0 +1,124 @@
+:root {
+  --green: #2e7d32;
+  --light: #f4f8f4;
+  --text: #222;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  background: var(--light);
+  color: var(--text);
+}
+header {
+  background: var(--green);
+  color: #fff;
+  padding: 1rem 2rem;
+}
+header h1 { margin: 0; font-size: 1.5rem; }
+main { max-width: 800px; margin: 2rem auto; padding: 0 1rem; }
+.search { display: flex; gap: .5rem; margin-bottom: 1rem; flex-wrap: wrap; }
+input[type=text] {
+  padding: .5rem; border: 1px solid #bbb; border-radius: 6px; flex: 1; min-width: 160px;
+}
+button, .btn {
+  background: var(--green); color: #fff; border: 0; border-radius: 6px;
+  padding: .5rem 1rem; cursor: pointer; text-decoration: none; font-size: 1rem;
+}
+button.danger { background: #c62828; padding: .3rem .7rem; }
+.btn.secondary { background: #666; }
+table {
+  width: 100%; border-collapse: collapse; background: #fff;
+  border-radius: 8px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,.1);
+}
+th, td { padding: .75rem; text-align: left; border-bottom: 1px solid #eee; }
+th { background: #e8f5e9; }
+tr:hover td { background: #fafafa; }
+.card {
+  background: #fff; padding: 1.5rem; border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0,0,0,.1); display: grid; gap: 1rem;
+}
+label { display: grid; gap: .25rem; font-weight: 600; }
+
+/* ---- v2 additions ---- */
+header h1 a { color: #fff; text-decoration: none; }
+main a { color: var(--green); }
+a.btn, .btn { display: inline-block; color: #fff; }
+.btn.small, button.small { padding: .3rem .7rem; font-size: .9rem; }
+.actions { display: flex; gap: .4rem; align-items: center; }
+.actions form { margin: 0; }
+.badge {
+  background: #e8f5e9; color: var(--green); border-radius: 999px;
+  padding: .15rem .6rem; font-weight: 600;
+}
+.flash {
+  background: #e8f5e9; border-left: 4px solid var(--green);
+  padding: .75rem 1rem; margin-bottom: 1rem; border-radius: 4px;
+}
+.error { color: #c62828; font-weight: 400; font-size: .9rem; }
+select, input[type=date] {
+  padding: .5rem; border: 1px solid #bbb; border-radius: 6px; font-size: 1rem;
+}
+table.info th { width: 140px; }
+h2 { margin-top: 2rem; }
+
+/* ---- v3: calendar ---- */
+header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: .5rem; }
+header nav a { color: #fff; text-decoration: none; margin-left: 1.2rem; font-weight: 600; }
+header nav a:hover { text-decoration: underline; }
+main.wide { max-width: 1100px; }
+.cal-head { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: .5rem; }
+.cal-head h2 { margin: 0; }
+.legend { font-size: .9rem; }
+.dot { display: inline-block; width: 12px; height: 12px; border-radius: 3px; vertical-align: middle; }
+.booked-dot { background: #ffb300; }
+.today-dot { background: var(--green); border-radius: 50%; }
+table.calendar { table-layout: fixed; }
+table.calendar th { text-align: center; }
+table.calendar td { height: 110px; vertical-align: top; padding: .3rem; border: 1px solid #eee; }
+table.calendar td.other { background: #f3f3f3; }
+table.calendar td.other .daynum { color: #aaa; }
+table.calendar td.booked { background: #fff8e1; box-shadow: inset 0 0 0 2px #ffb300; }
+.daynum {
+  display: inline-block; min-width: 1.7rem; text-align: center; padding: .1rem .3rem;
+  border-radius: 50%; font-weight: 600; text-decoration: none;
+}
+td.today .daynum { background: var(--green); color: #fff; }
+.chip {
+  display: block; background: #ffb300; color: #222 !important; border-radius: 4px;
+  padding: 1px 5px; margin-top: 3px; font-size: .78rem; text-decoration: none;
+  overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+}
+.chip:hover { background: #ffa000; }
+select { width: 100%; }
+@media (max-width: 700px) {
+  table.calendar td { height: 80px; font-size: .8rem; }
+  .chip { font-size: .65rem; }
+}
+
+/* ---- v4: login, roles, doctor dashboard ---- */
+header nav { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+header nav a { margin-left: 0; }
+.who { color: #c8e6c9; font-size: .9rem; }
+form.logout { margin: 0; }
+button.warn { background: #ef6c00; }
+button.secondary { background: #666; }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin: 1rem 0; }
+.stat { background: #fff; border-radius: 8px; padding: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,.1); }
+.stat .num { display: block; font-size: 2rem; font-weight: 700; color: var(--green); }
+.status { padding: .15rem .55rem; border-radius: 999px; font-size: .8rem; font-weight: 600; }
+.status-PENDING { background: #fff3cd; color: #8a6d00; }
+.status-COMPLETED { background: #d4edda; color: #1b5e20; }
+.status-CANCELLED { background: #f8d7da; color: #b71c1c; }
+.chip.cancelled { background: #ddd; text-decoration: line-through; color: #777 !important; }
+.chip.completed { background: #a5d6a7; }
+.legend a.on { font-weight: 700; text-decoration: underline; }
+textarea { padding: .5rem; border: 1px solid #bbb; border-radius: 6px; font: inherit; width: 100%; }
+label.check { display: flex; align-items: center; gap: .5rem; font-weight: 400; }
+label.check input { width: auto; }
+.error-box { background: #f8d7da; color: #b71c1c; padding: .6rem .9rem; border-radius: 6px; }
+body.login-page { display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+form.login { width: 100%; max-width: 360px; }
+form.login h1 { margin: 0; color: var(--green); font-size: 1.6rem; }
+form.login p { margin: 0; color: #666; }
+input[type=password] { padding: .5rem; border: 1px solid #bbb; border-radius: 6px; width: 100%; }

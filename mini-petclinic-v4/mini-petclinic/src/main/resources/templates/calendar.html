@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mini PetClinic</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+  <header th:replace="~{fragments :: header}"></header>
+  <main class="wide">
+    <div class="flash" th:if="${message}" th:text="${message}"></div>
+
+    <div class="cal-head">
+      <a class="btn small" th:href="@{/calendar(month=${prev},scope=${scope})}">&laquo; Prev</a>
+      <h2 th:text="${title}">October 2026</h2>
+      <div>
+        <a class="btn small secondary" th:href="@{/calendar(month=${current},scope=${scope})}">Today</a>
+        <a class="btn small" th:href="@{/calendar(month=${next},scope=${scope})}">Next &raquo;</a>
+      </div>
+    </div>
+
+    <p class="legend">
+      <span th:if="${me.role == 'DOCTOR'}">
+        Showing:
+        <a th:href="@{/calendar(month=${monthKey},scope='mine')}" th:classappend="${scope == 'mine'} ? 'on'">My bookings</a> |
+        <a th:href="@{/calendar(month=${monthKey},scope='all')}" th:classappend="${scope == 'all'} ? 'on'">All doctors</a>
+        &nbsp;&nbsp;
+      </span>
+      <span class="dot booked-dot"></span> Day with bookings &nbsp;
+      <span class="dot today-dot"></span> Today &nbsp;
+      <small>Click a date number to add a booking, click a booking to edit it.</small>
+    </p>
+
+    <table class="calendar">
+      <thead>
+        <tr><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th><th>Sun</th></tr>
+      </thead>
+      <tbody>
+        <tr th:each="week : ${weeks}">
+          <td th:each="d : ${week}"
+              th:classappend="${(d.inMonth ? '' : 'other ') + (d.today ? 'today ' : '') + (d.booked ? 'booked' : '')}">
+            <a class="daynum" th:href="@{/appointments/new(date=${d.date})}" th:text="${d.dayOfMonth}">1</a>
+            <a class="chip" th:each="a : ${d.appointments}"
+               th:classappend="${a.status == 'CANCELLED' ? 'cancelled' : (a.status == 'COMPLETED' ? 'completed' : '')}"
+               th:href="@{/appointments/{id}/edit(id=${a.id})}"
+               th:title="${a.doctor.fullName + ' | ' + a.pet.name + ' - ' + a.reason + ' (' + a.status + ')'}"
+               th:text="${a.timeText + ' ' + a.pet.owner.firstName + ' ' + a.pet.owner.lastName}">09:30 Client</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>Bookings this month</h2>
+    <table>
+      <thead>
+        <tr><th>Date</th><th>Time</th><th>Client</th><th>Pet</th><th>Doctor</th><th>Reason</th><th>Status</th><th>Actions</th></tr>
+      </thead>
+      <tbody>
+        <tr th:each="a : ${appointments}">
+          <td th:text="${a.appointmentDate}"></td>
+          <td th:text="${a.timeText}"></td>
+          <td><a th:href="@{/owners/{id}(id=${a.pet.owner.id})}"
+                 th:text="${a.pet.owner.firstName + ' ' + a.pet.owner.lastName}"></a></td>
+          <td th:text="${a.pet.name}"></td>
+          <td th:text="${a.doctor.fullName}"></td>
+          <td th:text="${a.reason}"></td>
+          <td><span class="status" th:classappend="${'status-' + a.status}" th:text="${a.status}"></span></td>
+          <td class="actions">
+            <a class="btn small" th:if="${a.status == 'PENDING' and (me.role == 'ADMIN' or a.doctor.id == me.id)}"
+               th:href="@{/appointments/{id}/visit(id=${a.id})}">Record visit</a>
+            <a class="btn small secondary" th:href="@{/appointments/{id}/edit(id=${a.id})}">Edit</a>
+            <form th:if="${a.status == 'PENDING'}" method="post"
+                  th:action="@{/appointments/{id}/status(id=${a.id})}"
+                  onsubmit="return confirm('Cancel this booking?');">
+              <input type="hidden" name="status" value="CANCELLED">
+              <button class="warn small" type="submit">Cancel</button>
+            </form>
+            <form sec:authorize="hasRole('ADMIN')" method="post"
+                  th:action="@{/appointments/{id}/delete(id=${a.id})}"
+                  onsubmit="return confirm('PERMANENTLY delete this booking?');">
+              <button class="danger small" type="submit">Delete</button>
+            </form>
+          </td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(appointments)}"><td colspan="8">No bookings this month.</td></tr>
+      </tbody>
+    </table>
+  </main>
+</body>
+</html>

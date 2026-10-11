@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mini PetClinic</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+  <header th:replace="~{fragments :: header}"></header>
+  <main>
+    <h2 th:text="${pet.id == null} ? 'Add Pet' : 'Edit Pet'">Pet</h2>
+    <p>Owner: <strong th:text="${owner.firstName + ' ' + owner.lastName}"></strong></p>
+    <form class="card" method="post" th:object="${pet}"
+          th:action="${pet.id == null} ? @{/owners/{oid}/pets/new(oid=${owner.id})}
+                                       : @{/owners/{oid}/pets/{pid}/edit(oid=${owner.id},pid=${pet.id})}">
+      <label>Name
+        <input type="text" th:field="*{name}">
+        <span class="error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
+      </label>
+      <label>Birth date
+        <input type="date" th:field="*{birthDate}">
+        <span class="error" th:if="${#fields.hasErrors('birthDate')}" th:errors="*{birthDate}"></span>
+      </label>
+      <label>Type
+        <select th:field="*{type}">
+          <option value="">-- choose --</option>
+          <option th:each="t : ${types}" th:value="${t}" th:text="${t}"></option>
+        </select>
+        <span class="error" th:if="${#fields.hasErrors('type')}" th:errors="*{type}"></span>
+      </label>
+      <div>
+        <button type="submit">Save</button>
+        <a class="btn secondary" th:href="@{/owners/{id}(id=${owner.id})}">Cancel</a>
+      </div>
+    </form>
+  </main>
+</body>
+</html>

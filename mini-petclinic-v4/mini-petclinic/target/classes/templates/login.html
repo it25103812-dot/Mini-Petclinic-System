@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Login - Mini PetClinic</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body class="login-page">
+  <form class="card login" method="post" th:action="@{/login}">
+    <h1>🐾 Mini PetClinic</h1>
+    <p>Staff login</p>
+    <div class="error-box" th:if="${param.error}">Invalid username or password.</div>
+    <div class="flash" th:if="${param.logout}">You have been logged out.</div>
+    <label>Username <input type="text" name="username" autofocus required></label>
+    <label>Password <input type="password" name="password" required></label>
+    <button type="submit">Login</button>
+  </form>
+</body>
+</html>
